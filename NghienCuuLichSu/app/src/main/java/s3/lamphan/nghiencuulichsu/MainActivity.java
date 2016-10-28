@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        // test sync
+        for(int i = 0; i <= 20; i++){
+            testSync(i);
+        }
     }
 
     @Override
@@ -48,5 +54,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private static Object lock = new Object();
+    public void testSync(final int numberOfCaller)
+    {
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                synchronized (lock) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (Exception ex){
+
+                    }
+                    Log.d("TestSync", "here call lock synchronized.................. : " + numberOfCaller);
+                }
+//                try {
+//                    Thread.sleep(500);
+//                } catch (Exception ex){
+//
+//                }
+                Log.d("TestSync", "here call content function.......... : " + numberOfCaller);
+            }
+        };
+        thread.start();
     }
 }
