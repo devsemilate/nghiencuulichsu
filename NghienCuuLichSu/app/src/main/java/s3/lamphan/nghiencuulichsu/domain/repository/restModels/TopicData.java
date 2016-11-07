@@ -25,6 +25,9 @@ public class TopicData {
     @SerializedName("contentUrl")
     @Expose
     String contentUrl;
+    @SerializedName("contentTags")
+    @Expose
+    String contentTags;
 
     public String getObjectId() {
         return objectId;
@@ -72,5 +75,13 @@ public class TopicData {
 
     public void setContentUrl(String contentUrl) {
         this.contentUrl = contentUrl;
+    }
+
+    public String getContentTags() {
+        return contentTags;
+    }
+
+    public void setContentTags(String contentTags) {
+        this.contentTags = contentTags;
     }
 }

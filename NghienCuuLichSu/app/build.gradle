@@ -39,4 +39,5 @@ dependencies {
     compile 'org.parceler:parceler-api:+'
     provided 'org.parceler:parceler:+'
     compile 'com.intuit.sdp:sdp-android:1.0.3'
+    compile 'org.jsoup:jsoup:1.9.2'
 }

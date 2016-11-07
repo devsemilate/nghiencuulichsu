@@ -36,6 +36,7 @@ import s3.lamphan.nghiencuulichsu.domain.repository.IBaseCallback;
 import s3.lamphan.nghiencuulichsu.domain.repository.TopicRepository;
 import s3.lamphan.nghiencuulichsu.mvp.models.Branch;
 import s3.lamphan.nghiencuulichsu.mvp.models.Topic;
+import s3.lamphan.nghiencuulichsu.mvp.presenters.BasePresenter;
 import s3.lamphan.nghiencuulichsu.mvp.presenters.BranchPresenter;
 import s3.lamphan.nghiencuulichsu.mvp.views.fragments.TopicFragment;
 import s3.lamphan.nghiencuulichsu.ui.adapter.DrawerMenuAdapter;
@@ -105,6 +106,11 @@ public class MainActivity extends BaseActivity implements IMainView{
 
             @Override
             public void error(String message) {
+                hideLoading();
+            }
+
+            @Override
+            public void error(BasePresenter.Error error) {
                 hideLoading();
             }
         });

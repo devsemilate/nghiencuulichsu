@@ -1,19 +1,14 @@
-package s3.lamphan.nghiencuulichsu.mvp.models;
-
-import org.parceler.Parcel;
-
-import java.util.ArrayList;
-import java.util.List;
+package s3.lamphan.nghiencuulichsu.domain.persistence.models;
 
 import io.realm.RealmObject;
-import s3.lamphan.nghiencuulichsu.domain.repository.restModels.TopicData;
-import s3.lamphan.nghiencuulichsu.domain.repository.restModels.TopicRestModel;
+import io.realm.annotations.PrimaryKey;
+import s3.lamphan.nghiencuulichsu.mvp.models.Topic;
 
 /**
- * Created by lam.phan on 11/1/2016.
+ * Created by lam.phan on 11/7/2016.
  */
-@Parcel
-public class Topic {
+public class TopicRealmObject extends RealmObject{
+    @PrimaryKey
     String id;
     String name;
     String description;
@@ -22,11 +17,12 @@ public class Topic {
     String contentUrl;
     String contentTags;
 
-    public Topic() {
+    public TopicRealmObject() {
     }
 
-    public Topic(String id, String name, String description, String cover,
-                 String branch, String contentUrl, String contentTags) {
+    public TopicRealmObject(String id, String name, String description,
+                            String cover, String branch,
+                            String contentUrl, String contentTags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -92,18 +88,18 @@ public class Topic {
         this.contentTags = contentTags;
     }
 
-    public static List<Topic> convertTopicFromRestModel(TopicRestModel topicRestModel)
+    public static TopicRealmObject convertFromTopicModel(Topic topic)
     {
-        List<Topic> results = new ArrayList<>();
-        if(topicRestModel != null) {
-            ArrayList<TopicData> datas = topicRestModel.getData();
-            for(TopicData data : datas)
-            {
-                Topic topic = new Topic(data.getObjectId(), data.getName(), data.getDescription(), data.getCover(),
-                        data.getBranch(), data.getContentUrl(), data.getContentTags());
-                results.add(topic);
-            }
-        }
-        return results;
+        return new TopicRealmObject(topic.getId(), topic.getName(), topic.getDescription(),
+                topic.getCover(), topic.getBranch(),
+                topic.getContentUrl(), topic.getContentTags());
+    }
+
+    public static Topic convertToTopicModel(TopicRealmObject topicRealmObject)
+    {
+        return new Topic(topicRealmObject.getId(), topicRealmObject.getName(),
+                topicRealmObject.getDescription(), topicRealmObject.getCover(),
+                topicRealmObject.getBranch(), topicRealmObject.getContentUrl(),
+                topicRealmObject.getContentTags());
     }
 }

@@ -12,7 +12,8 @@ import s3.lamphan.nghiencuulichsu.domain.repository.restModels.TopicRestModel;
 public interface ITopicService {
     @GET("v1/data/topic")
     Observable<TopicRestModel> getTopics(
-        @Query("where") String whereBranchId
+        @Query("where") String whereBranchId,
+        @Query("pageSize") Integer pageSize,
+        @Query("offset") Integer offset
     );
-
 }

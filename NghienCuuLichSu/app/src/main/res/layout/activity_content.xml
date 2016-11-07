@@ -17,16 +17,13 @@
             android:theme="@style/CustomAppBar"
             app:titleTextColor="@android:color/white"/>
     </android.support.design.widget.AppBarLayout>
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_45sdp">
+        <WebView
+            android:id="@+id/wvContent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/tvContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-    </ScrollView>
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

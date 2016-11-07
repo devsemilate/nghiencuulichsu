@@ -6,21 +6,21 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 /**
- * Created by lam.phan on 11/1/2016.
+ * Created by lam.phan on 11/7/2016.
  */
-public class TopicRestModel {
+public class BookRestModel {
     @SerializedName("data")
     @Expose
-    ArrayList<TopicData> data = new ArrayList<>();
+    ArrayList<BookData> data = new ArrayList<>();
     @SerializedName("totalObjects")
     @Expose
     Integer totalObjects;
 
-    public ArrayList<TopicData> getData() {
+    public ArrayList<BookData> getData() {
         return data;
     }
 
-    public void setData(ArrayList<TopicData> data) {
+    public void setData(ArrayList<BookData> data) {
         this.data = data;
     }
 

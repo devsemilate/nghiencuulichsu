@@ -4,14 +4,11 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import s3.lamphan.nghiencuulichsu.domain.repository.gateways.BaseGateWay;
 import s3.lamphan.nghiencuulichsu.domain.repository.gateways.IGateWay;
 import s3.lamphan.nghiencuulichsu.domain.repository.restModels.TopicRestModel;
@@ -41,7 +38,9 @@ public class TopicRepository extends BaseRepository{
         }
     }
 
-    public void getListTopic(String branchId, final IBaseCallback<Topic> callback)
+    public void getListTopic(String branchId, final int pageSize, final int curPage,
+                             final IBaseCallback<Topic> callback,
+                             final IDataLogicCallback topicLogicCallback)
     {
         if(service == null || compositeSubscription == null)
         {
@@ -49,7 +48,7 @@ public class TopicRepository extends BaseRepository{
             return;
         }
 
-        final Observable<TopicRestModel> call = this.service.getTopics("branch='"+branchId+"'");
+        final Observable<TopicRestModel> call = this.service.getTopics("branch='"+branchId+"'", pageSize, curPage);
         Log.d("Test", "call get topic : " + new Gson().toJson(call));
         Subscription subscription = call.observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.newThread())
@@ -69,6 +68,11 @@ public class TopicRepository extends BaseRepository{
                 public void onNext(TopicRestModel topicRestModel) {
                     Log.d("Test", "getTopic result : " + new Gson().toJson(topicRestModel));
                     callback.success(Topic.convertTopicFromRestModel(topicRestModel));
+                    if (pageSize * (curPage + 1) >= topicRestModel.getTotalObjects()) {
+                        if (topicLogicCallback != null) {
+                            topicLogicCallback.overFlow();
+                        }
+                    }
                 }
             });
 

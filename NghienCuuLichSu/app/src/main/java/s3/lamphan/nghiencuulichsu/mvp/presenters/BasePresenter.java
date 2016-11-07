@@ -20,9 +20,18 @@ import s3.lamphan.nghiencuulichsu.domain.repository.BaseRepository;
  * Created by lam.phan on 11/2/2016.
  */
 public class BasePresenter {
+    public static enum Error
+    {
+        UNKNOWN,
+        NETWORK_CONNECT
+    }
+    protected static final int END_PAGE = -1;
+    public static final int DEFAULT_PAGE_SIZE = 5;
+    public static final int DEFAULT_START_PAGE = 0;
+
     private Context context;
     private List<BaseRepository> repositories = new ArrayList<>();
-    private CompositeSubscription compositeSubscription;
+    protected CompositeSubscription compositeSubscription;
     private ConnectivityManager connectivityManager;
 
     public BasePresenter(Context context) {
