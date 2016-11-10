@@ -34,10 +34,14 @@ import s3.lamphan.nghiencuulichsu.R;
 import s3.lamphan.nghiencuulichsu.domain.persistence.rx.RealmObserable;
 import s3.lamphan.nghiencuulichsu.domain.repository.IBaseCallback;
 import s3.lamphan.nghiencuulichsu.domain.repository.TopicRepository;
+import s3.lamphan.nghiencuulichsu.mvp.models.Book;
 import s3.lamphan.nghiencuulichsu.mvp.models.Branch;
 import s3.lamphan.nghiencuulichsu.mvp.models.Topic;
+import s3.lamphan.nghiencuulichsu.mvp.presenters.AppFlowPresenter;
 import s3.lamphan.nghiencuulichsu.mvp.presenters.BasePresenter;
 import s3.lamphan.nghiencuulichsu.mvp.presenters.BranchPresenter;
+import s3.lamphan.nghiencuulichsu.mvp.views.fragments.BookFragment;
+import s3.lamphan.nghiencuulichsu.mvp.views.fragments.DownloadBookDialogFm;
 import s3.lamphan.nghiencuulichsu.mvp.views.fragments.TopicFragment;
 import s3.lamphan.nghiencuulichsu.ui.adapter.DrawerMenuAdapter;
 
@@ -79,11 +83,45 @@ public class MainActivity extends BaseActivity implements IMainView{
             public void onSelected(Branch branchSelected) {
                 mDrawerLayout.closeDrawers();
                 getSupportActionBar().setTitle(branchSelected.getName());
-                presentTopicFragment(branchSelected);
+                if(AppFlowPresenter.isTopicBranchType(branchSelected)) {
+                    presentTopicFragment(branchSelected);
+                } else if(AppFlowPresenter.isBookBranchType(branchSelected)){
+                    presentBookFragment(branchSelected);
+                }
             }
         });
         rvLeftDrawer.setAdapter(drawerMenuAdapter);
         getBranchs();
+        // test
+        Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                int i = 0;
+                while(i < 100)
+                {
+                    Log.d("Test", "test call onNext : " + i);
+                    subscriber.onNext(i);
+                    i++;
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer i) {
+                        Log.d("Test", "test : " + i);
+                    }
+                });
     }
 
     public void getBranchs()
@@ -144,6 +182,12 @@ public class MainActivity extends BaseActivity implements IMainView{
         replcaeFragment(R.id.flFragmentContainer, topicFragment, true);
     }
 
+    public void presentBookFragment(Branch branchSelected)
+    {
+        BookFragment bookFragment = BookFragment.createNewInstance(branchSelected);
+        replcaeFragment(R.id.flFragmentContainer, bookFragment, true);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -159,5 +203,12 @@ public class MainActivity extends BaseActivity implements IMainView{
         presentContentViewIntent.putExtras(args);
         goToActivity(presentContentViewIntent, false);
     }
+
+    @Override
+    public void presentDownloadBookView(Book book) {
+        DownloadBookDialogFm downloadBookDialogFm = DownloadBookDialogFm.getInstance(book);
+        downloadBookDialogFm.show(fragmentManager, book.getName());
+    }
+
     /* end IMainView */
 }

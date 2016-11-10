@@ -12,14 +12,16 @@ public class BranchRealmObject extends RealmObject{
     private String id;
     String name;
     String image;
+    String type;
 
     public BranchRealmObject() {
     }
 
-    public BranchRealmObject(String id, String name, String image) {
+    public BranchRealmObject(String id, String name, String image, String type) {
         this.id = id;
         this.name = name;
         this.image = image;
+        this.type = type;
     }
 
     public String getId() {
@@ -46,14 +48,24 @@ public class BranchRealmObject extends RealmObject{
         this.image = image;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public static BranchRealmObject convertFromBranchModel(Branch branch)
     {
-        return new BranchRealmObject(branch.getId(), branch.getName(), branch.getImage());
+        return new BranchRealmObject(branch.getId(), branch.getName(),
+                branch.getImage(), branch.getType());
     }
 
     public static Branch convertToBranchModel(BranchRealmObject branchRealmObject)
     {
         return new Branch(branchRealmObject.getId(),
-                branchRealmObject.getName(), branchRealmObject.getImage());
+                branchRealmObject.getName(), branchRealmObject.getImage(),
+                branchRealmObject.getType());
     }
 }

@@ -14,12 +14,12 @@ import s3.lamphan.nghiencuulichsu.domain.repository.gateways.IGateWay;
 import s3.lamphan.nghiencuulichsu.domain.repository.restModels.BookRestModel;
 import s3.lamphan.nghiencuulichsu.domain.repository.services.IBookService;
 import s3.lamphan.nghiencuulichsu.mvp.models.Book;
+import s3.lamphan.nghiencuulichsu.mvp.presenters.BookPresenter;
 
 /**
  * Created by lam.phan on 11/7/2016.
  */
 public class BookRepository extends BaseRepository{
-    private static final String BOOK_BRANCH_ID = "b2";
     private IBookService service;
 
     public BookRepository() {
@@ -40,7 +40,7 @@ public class BookRepository extends BaseRepository{
         }
     }
 
-    public void getBookList(final int pageSize, final int curPage,
+    public void getBookList(final String branchId, final int pageSize, final int curPage,
                             final IBaseCallback<Book> callback,
                             final IDataLogicCallback bookLogicCallback)
     {
@@ -50,7 +50,7 @@ public class BookRepository extends BaseRepository{
             return;
         }
 
-        final Observable<BookRestModel> call = service.getBooks("branch='"+BOOK_BRANCH_ID+"'", pageSize, curPage);
+        final Observable<BookRestModel> call = service.getBooks("branch='"+ branchId +"'", pageSize, curPage);
         Subscription subscription = call.observeOn(AndroidSchedulers.mainThread())
                                         .subscribeOn(Schedulers.newThread())
                                         .subscribe(new Subscriber<BookRestModel>() {

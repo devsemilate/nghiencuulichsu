@@ -17,14 +17,16 @@ public class Branch {
     String id;
     String name;
     String image;
+    String type;
 
     public Branch() {
     }
 
-    public Branch(String id, String name, String image) {
+    public Branch(String id, String name, String image, String type) {
         this.id = id;
         this.name = name;
         this.image = image;
+        this.type = type;
     }
 
     public String getId() {
@@ -51,6 +53,14 @@ public class Branch {
         this.image = image;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public static List<Branch> convertFromRestModel(BranchRestModel restModel)
     {
         List<Branch> result = new ArrayList<>();
@@ -58,7 +68,8 @@ public class Branch {
             ArrayList<BranchData> datas = restModel.getData();
             for(BranchData data : datas)
             {
-                Branch branch = new Branch(data.getId(), data.getName(), data.getImage());
+                Branch branch = new Branch(data.getId(), data.getName(),
+                        data.getImage(), data.getType());
                 result.add(branch);
             }
         }

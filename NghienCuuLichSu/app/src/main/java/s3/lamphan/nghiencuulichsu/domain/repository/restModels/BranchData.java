@@ -16,6 +16,9 @@ public class BranchData {
     @SerializedName("image")
     @Expose
     String image;
+    @SerializedName("type")
+    @Expose
+    String type;
 
     public String getId() {
         return id;
@@ -39,5 +42,13 @@ public class BranchData {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

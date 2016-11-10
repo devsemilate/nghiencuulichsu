@@ -105,7 +105,9 @@ public class TopicFragment extends BaseFragment{
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (RecyclerViewScrollBehavior.isScrollingOverMiddle(linearLayoutManager, topicList.size())) {
-                    loadMore(branch.getId());
+                    if (branch != null) {
+                        loadMore(branch.getId());
+                    }
                 }
             }
         });
@@ -119,7 +121,9 @@ public class TopicFragment extends BaseFragment{
                 TopicPresenter.DEFAULT_START_PAGE);
         addPresenter(topicPresenter);
 
-        getTopic(branch.getId());
+        if(branch != null) {
+            getTopic(branch.getId());
+        }
     }
 
     public void getTopic(String branchId)

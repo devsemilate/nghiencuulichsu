@@ -1,5 +1,6 @@
 package s3.lamphan.nghiencuulichsu.mvp.views;
 
+import s3.lamphan.nghiencuulichsu.mvp.models.Book;
 import s3.lamphan.nghiencuulichsu.mvp.models.Topic;
 
 /**
@@ -7,4 +8,5 @@ import s3.lamphan.nghiencuulichsu.mvp.models.Topic;
  */
 public interface IMainView {
     void presentContentView(Topic topic);
+    void presentDownloadBookView(Book book);
 }

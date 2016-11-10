@@ -29,7 +29,7 @@ public class BasePresenter {
     public static final int DEFAULT_PAGE_SIZE = 5;
     public static final int DEFAULT_START_PAGE = 0;
 
-    private Context context;
+    protected Context context;
     private List<BaseRepository> repositories = new ArrayList<>();
     protected CompositeSubscription compositeSubscription;
     private ConnectivityManager connectivityManager;

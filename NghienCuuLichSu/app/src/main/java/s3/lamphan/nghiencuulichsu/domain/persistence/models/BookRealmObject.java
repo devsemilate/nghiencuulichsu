@@ -1,18 +1,14 @@
-package s3.lamphan.nghiencuulichsu.mvp.models;
+package s3.lamphan.nghiencuulichsu.domain.persistence.models;
 
-import org.parceler.Parcel;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import s3.lamphan.nghiencuulichsu.domain.repository.restModels.BookData;
-import s3.lamphan.nghiencuulichsu.domain.repository.restModels.BookRestModel;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import s3.lamphan.nghiencuulichsu.mvp.models.Book;
 
 /**
- * Created by lam.phan on 11/7/2016.
+ * Created by lam.phan on 11/8/2016.
  */
-@Parcel
-public class Book {
+public class BookRealmObject extends RealmObject{
+    @PrimaryKey
     String id;
     String branch;
     String name;
@@ -21,10 +17,12 @@ public class Book {
     String cover;
     String downloadUrl;
 
-    public Book() {
+    public BookRealmObject() {
     }
 
-    public Book(String id, String branch, String name, String author, String description, String cover, String downloadUrl) {
+    public BookRealmObject(String id, String branch, String name,
+                           String author, String description,
+                           String cover, String downloadUrl) {
         this.id = id;
         this.branch = branch;
         this.name = name;
@@ -90,19 +88,18 @@ public class Book {
         this.downloadUrl = downloadUrl;
     }
 
-    public static List<Book> convertFromRestModel(BookRestModel bookRestModel)
+    public static BookRealmObject convertFromBookModel(Book book)
     {
-        List<Book> bookList = new ArrayList<>();
-        if(bookRestModel != null)
-        {
-            List<BookData> bookDatas = bookRestModel.getData();
-            for(BookData bookData : bookDatas)
-            {
-                bookList.add(new Book(bookData.getId(), bookData.getBranch(), bookData.getName(),
-                        bookData.getAuthor(), bookData.getDescription(),
-                        bookData.getCover(), bookData.getDownloadUrl()));
-            }
-        }
-        return bookList;
+        return new BookRealmObject(book.getId(), book.getBranch(), book.getName(),
+                book.getAuthor(), book.getDescription(),
+                book.getCover(), book.getDownloadUrl());
+    }
+
+    public static Book convertToBookModel(BookRealmObject bookRealmObject)
+    {
+        return new Book(bookRealmObject.getId(), bookRealmObject.getBranch(),
+                bookRealmObject.getName(), bookRealmObject.getAuthor(),
+                bookRealmObject.getDescription(), bookRealmObject.getCover(),
+                bookRealmObject.getDownloadUrl());
     }
 }
