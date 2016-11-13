@@ -86,6 +86,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
                         .into(imvCover);
             }
             tvDescription.setText(book.getDescription());
+            btGetBook.setText(book.getStatusDownloadDes());
             btGetBook.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -1,5 +1,7 @@
 package s3.lamphan.nghiencuulichsu.mvp.models;
 
+import android.app.DownloadManager;
+
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class Book {
     String description;
     String cover;
     String downloadUrl;
+    int statusDownload;
+    long downloadReference;
 
     public Book() {
     }
@@ -32,6 +36,7 @@ public class Book {
         this.description = description;
         this.cover = cover;
         this.downloadUrl = downloadUrl;
+        this.statusDownload = DownloadManager.STATUS_PAUSED;
     }
 
     public String getId() {
@@ -88,6 +93,44 @@ public class Book {
 
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
+    }
+
+    public int getStatusDownload() {
+        return statusDownload;
+    }
+
+    public void setStatusDownload(int statusDownload) {
+        this.statusDownload = statusDownload;
+    }
+
+    public long getDownloadReference() {
+        return downloadReference;
+    }
+
+    public void setDownloadReference(long downloadReference) {
+        this.downloadReference = downloadReference;
+    }
+
+    public String getStatusDownloadDes()
+    {
+        String statusDes = "";
+        switch (statusDownload)
+        {
+            case DownloadManager.STATUS_FAILED:
+            case DownloadManager.STATUS_PAUSED:
+            case DownloadManager.STATUS_PENDING:
+                statusDes = "Tải";
+                break;
+            case DownloadManager.STATUS_RUNNING:
+                statusDes = "Đang Tải";
+                break;
+            case DownloadManager.STATUS_SUCCESSFUL:
+                statusDes = "Mở Xem";
+                break;
+            default:
+                break;
+        }
+        return statusDes;
     }
 
     public static List<Book> convertFromRestModel(BookRestModel bookRestModel)

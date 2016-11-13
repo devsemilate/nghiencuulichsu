@@ -209,6 +209,7 @@ public class BookFragment extends BaseFragment implements IHandleDownloadView {
     @Override
     public void onFailed(Book book, long downloadId) {
         Log.d("Test", "onFailed download book : " + new Gson().toJson(book));
+        bookAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -219,16 +220,19 @@ public class BookFragment extends BaseFragment implements IHandleDownloadView {
     @Override
     public void onComplete(Book book, long downloadId) {
         Log.d("Test", "onComplete download book : " + new Gson().toJson(book));
+        bookAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onProgress(Book book, long downloadId, int progress) {
         Log.d("Test", "onProgress download book : " + progress);
+        bookAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onStart(Book book, long downloadId) {
         Log.d("Test", "onstart download book : " + new Gson().toJson(book));
+        bookAdapter.notifyDataSetChanged();
     }
 
     @Override

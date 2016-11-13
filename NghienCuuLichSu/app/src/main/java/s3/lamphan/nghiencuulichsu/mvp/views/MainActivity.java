@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import org.parceler.Parcels;
+import org.parceler.apache.commons.collections.functors.ExceptionClosure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,36 +93,7 @@ public class MainActivity extends BaseActivity implements IMainView{
         });
         rvLeftDrawer.setAdapter(drawerMenuAdapter);
         getBranchs();
-        // test
-        Observable.create(new Observable.OnSubscribe<Integer>() {
-            @Override
-            public void call(Subscriber<? super Integer> subscriber) {
-                int i = 0;
-                while(i < 100)
-                {
-                    Log.d("Test", "test call onNext : " + i);
-                    subscriber.onNext(i);
-                    i++;
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Integer>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer i) {
-                        Log.d("Test", "test : " + i);
-                    }
-                });
     }
 
     public void getBranchs()
@@ -140,6 +112,7 @@ public class MainActivity extends BaseActivity implements IMainView{
                 branchList.addAll(results);
                 drawerMenuAdapter.notifyDataSetChanged();
                 hideLoading();
+                test();
             }
 
             @Override
@@ -152,6 +125,56 @@ public class MainActivity extends BaseActivity implements IMainView{
                 hideLoading();
             }
         });
+    }
+
+    public void test()
+    {
+        // test
+        Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                subscriber.onNext(-1);
+                subscriber.onNext(-2);
+                subscriber.onNext(-3);
+                for(int i = 0; i < 50; i++)
+                {
+                    try {
+                        Thread.sleep(200);
+                    } catch (Exception ex)
+                    {
+
+                    }
+                    if(!subscriber.isUnsubscribed())
+                        subscriber.onNext(i);
+
+                }
+//                int i = 0;
+//                while(i < 100)
+//                {
+//                    Log.d("Test", "test call onNext : " + i);
+//                    subscriber.onNext(i);
+//                    i++;
+//                }
+                subscriber.onCompleted();
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d("Test", "onCompleted ..... ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer i) {
+                        Log.d("Test", "test : " + i);
+                    }
+                });
     }
 
     @Override
