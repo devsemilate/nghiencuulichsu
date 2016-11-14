@@ -1,5 +1,7 @@
 package s3.lamphan.nghiencuulichsu.domain.persistence.models;
 
+import android.app.DownloadManager;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import s3.lamphan.nghiencuulichsu.mvp.models.Book;
@@ -16,6 +18,8 @@ public class BookRealmObject extends RealmObject{
     String description;
     String cover;
     String downloadUrl;
+    int statusDownload;
+    String localDownloadPath;
 
     public BookRealmObject() {
     }
@@ -30,6 +34,22 @@ public class BookRealmObject extends RealmObject{
         this.description = description;
         this.cover = cover;
         this.downloadUrl = downloadUrl;
+        statusDownload = DownloadManager.STATUS_PAUSED;
+        this.localDownloadPath = "";
+    }
+
+    public BookRealmObject(String id, String branch, String name, String author,
+                           String description, String cover, String downloadUrl,
+                           int statusDownload, String localDownloadPath) {
+        this.id = id;
+        this.branch = branch;
+        this.name = name;
+        this.author = author;
+        this.description = description;
+        this.cover = cover;
+        this.downloadUrl = downloadUrl;
+        this.statusDownload = statusDownload;
+        this.localDownloadPath = localDownloadPath;
     }
 
     public String getId() {
@@ -88,11 +108,28 @@ public class BookRealmObject extends RealmObject{
         this.downloadUrl = downloadUrl;
     }
 
+    public int getStatusDownload() {
+        return statusDownload;
+    }
+
+    public void setStatusDownload(int statusDownload) {
+        this.statusDownload = statusDownload;
+    }
+
+    public String getLocalDownloadPath() {
+        return localDownloadPath;
+    }
+
+    public void setLocalDownloadPath(String localDownloadPath) {
+        this.localDownloadPath = localDownloadPath;
+    }
+
     public static BookRealmObject convertFromBookModel(Book book)
     {
         return new BookRealmObject(book.getId(), book.getBranch(), book.getName(),
                 book.getAuthor(), book.getDescription(),
-                book.getCover(), book.getDownloadUrl());
+                book.getCover(), book.getDownloadUrl(),
+                book.getStatusDownload(), book.getLocalDownloadPath());
     }
 
     public static Book convertToBookModel(BookRealmObject bookRealmObject)
@@ -100,6 +137,16 @@ public class BookRealmObject extends RealmObject{
         return new Book(bookRealmObject.getId(), bookRealmObject.getBranch(),
                 bookRealmObject.getName(), bookRealmObject.getAuthor(),
                 bookRealmObject.getDescription(), bookRealmObject.getCover(),
-                bookRealmObject.getDownloadUrl());
+                bookRealmObject.getDownloadUrl(), bookRealmObject.getStatusDownload(),
+                bookRealmObject.getLocalDownloadPath());
+    }
+
+    public static void merBook(BookRealmObject bookRO, Book book)
+    {
+        bookRO.setBranch(book.getBranch());
+        bookRO.setName(book.getName());
+        bookRO.setAuthor(book.getAuthor());
+        bookRO.setDescription(book.getDescription());
+        bookRO.setCover(book.getCover());
     }
 }

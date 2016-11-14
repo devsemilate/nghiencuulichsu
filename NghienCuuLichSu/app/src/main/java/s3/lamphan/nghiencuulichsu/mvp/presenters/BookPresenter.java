@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -60,19 +61,21 @@ public class BookPresenter extends BasePresenter{
                 bookRepository.getBookList(branchId, pageSize, curPage, new IBaseCallback<Book>() {
                     @Override
                     public void success(List<Book> results) {
-                        if (callback != null) {
-                            callback.success(results);
-                            if (results.size() > 0) {
-                                curPage++;
-                            } else {
-                                curPage = END_PAGE;
-                            }
-                        }
+//                        if (callback != null) {
+//                            callback.success(results);
+//                            if (results.size() > 0) {
+//                                curPage++;
+//                            } else {
+//                                curPage = END_PAGE;
+//                            }
+//                        }
+//
+//                        // save book
+//                        saveBooks(results);
+//
+//                        isGettingBook.set(false);
 
-                        // save topic
-                        saveBooks(results);
-
-                        isGettingBook.set(false);
+                        merBooksWithDb(results, callback);
                     }
 
                     @Override
@@ -153,6 +156,37 @@ public class BookPresenter extends BasePresenter{
                     }
                 });
         compositeSubscription.add(subscription);
+    }
+
+    public void merBooksWithDb(List<Book> bookList, final IBaseCallback<Book> callback)
+    {
+        bookDbHelper.merBookDownloadStatus(bookList).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<List<Book>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Book> bookList) {
+                        if(callback != null)
+                        {
+                            callback.success(bookList);
+                            if (bookList.size() > 0) {
+                                curPage++;
+                            } else {
+                                curPage = END_PAGE;
+                            }
+                        }
+                        isGettingBook.set(false);
+                    }
+                });
     }
 
 }

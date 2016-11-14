@@ -24,6 +24,7 @@ public class Book {
     String downloadUrl;
     int statusDownload;
     long downloadReference;
+    String localDownloadPath;
 
     public Book() {
     }
@@ -37,6 +38,20 @@ public class Book {
         this.cover = cover;
         this.downloadUrl = downloadUrl;
         this.statusDownload = DownloadManager.STATUS_PAUSED;
+        this.localDownloadPath = "";
+    }
+
+    public Book(String id, String branch, String name, String author, String description, String cover, String downloadUrl,
+                int statusDownload, String localDownloadPath) {
+        this.id = id;
+        this.branch = branch;
+        this.name = name;
+        this.author = author;
+        this.description = description;
+        this.cover = cover;
+        this.downloadUrl = downloadUrl;
+        this.statusDownload = statusDownload;
+        this.localDownloadPath = localDownloadPath;
     }
 
     public String getId() {
@@ -111,6 +126,14 @@ public class Book {
         this.downloadReference = downloadReference;
     }
 
+    public String getLocalDownloadPath() {
+        return localDownloadPath;
+    }
+
+    public void setLocalDownloadPath(String localDownloadPath) {
+        this.localDownloadPath = localDownloadPath;
+    }
+
     public String getStatusDownloadDes()
     {
         String statusDes = "";
@@ -131,6 +154,11 @@ public class Book {
                 break;
         }
         return statusDes;
+    }
+
+    public boolean isDownloaded()
+    {
+        return statusDownload == DownloadManager.STATUS_SUCCESSFUL;
     }
 
     public static List<Book> convertFromRestModel(BookRestModel bookRestModel)

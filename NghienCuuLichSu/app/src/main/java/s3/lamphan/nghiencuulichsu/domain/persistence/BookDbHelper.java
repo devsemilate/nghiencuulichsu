@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 import rx.Observable;
@@ -62,6 +63,61 @@ public class BookDbHelper {
                 {
                     result.add(BookRealmObject.convertToBookModel(bro));
                 }
+                return result;
+            }
+        });
+    }
+
+    public Observable<Boolean> updateBookDownloadStatus(final Book book)
+    {
+        return RealmObserable.object(context, new Func1<Realm, RealmObject>() {
+            @Override
+            public RealmObject call(Realm realm) {
+                BookRealmObject bookRO = realm.where(BookRealmObject.class)
+                        .equalTo("id", book.getId())
+                        .findFirst();
+                bookRO.setStatusDownload(book.getStatusDownload());
+                bookRO.setLocalDownloadPath(book.getLocalDownloadPath());
+                return realm.copyToRealmOrUpdate(bookRO);
+            }
+        }).map(new Func1<RealmObject, Boolean>() {
+            @Override
+            public Boolean call(RealmObject realmObject) {
+                return true;
+            }
+        });
+    }
+
+    public Observable<List<Book>> merBookDownloadStatus(final List<Book> books)
+    {
+        return RealmObserable.list(context, new Func1<Realm, RealmList<BookRealmObject>>() {
+            @Override
+            public RealmList<BookRealmObject> call(Realm realm) {
+                RealmList<BookRealmObject> bookROList = new RealmList<BookRealmObject>();
+                for (Book book : books) {
+                    BookRealmObject bookROU = realm.where(BookRealmObject.class)
+                            .equalTo("id", book.getId())
+                            .findFirst();
+                    if (bookROU != null) {
+                        BookRealmObject.merBook(bookROU, book);
+                        realm.copyToRealmOrUpdate(bookROU);
+                        bookROList.add(bookROU);
+                    } else {
+                        BookRealmObject bookROA = BookRealmObject.convertFromBookModel(book);
+                        realm.copyToRealmOrUpdate(bookROA);
+                        bookROList.add(bookROA);
+                    }
+                }
+                return bookROList;
+            }
+        }).map(new Func1<RealmList<BookRealmObject>, List<Book>>() {
+            @Override
+            public List<Book> call(RealmList<BookRealmObject> bookRealmObjects) {
+                List<Book> result = new ArrayList<Book>();
+                for (BookRealmObject bookRO : bookRealmObjects) {
+                    result.add(BookRealmObject.convertToBookModel(bookRO));
+                }
+
                 return result;
             }
         });

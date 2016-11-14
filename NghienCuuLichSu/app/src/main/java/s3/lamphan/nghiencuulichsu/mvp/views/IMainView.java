@@ -9,4 +9,5 @@ import s3.lamphan.nghiencuulichsu.mvp.models.Topic;
 public interface IMainView {
     void presentContentView(Topic topic);
     void presentDownloadBookView(Book book);
+    void openBook(Book book);
 }

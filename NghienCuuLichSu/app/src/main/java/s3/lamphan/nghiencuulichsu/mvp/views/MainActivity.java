@@ -1,6 +1,7 @@
 package s3.lamphan.nghiencuulichsu.mvp.views;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 import org.parceler.Parcels;
 import org.parceler.apache.commons.collections.functors.ExceptionClosure;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,7 +114,6 @@ public class MainActivity extends BaseActivity implements IMainView{
                 branchList.addAll(results);
                 drawerMenuAdapter.notifyDataSetChanged();
                 hideLoading();
-                test();
             }
 
             @Override
@@ -125,56 +126,6 @@ public class MainActivity extends BaseActivity implements IMainView{
                 hideLoading();
             }
         });
-    }
-
-    public void test()
-    {
-        // test
-        Observable.create(new Observable.OnSubscribe<Integer>() {
-            @Override
-            public void call(Subscriber<? super Integer> subscriber) {
-                subscriber.onNext(-1);
-                subscriber.onNext(-2);
-                subscriber.onNext(-3);
-                for(int i = 0; i < 50; i++)
-                {
-                    try {
-                        Thread.sleep(200);
-                    } catch (Exception ex)
-                    {
-
-                    }
-                    if(!subscriber.isUnsubscribed())
-                        subscriber.onNext(i);
-
-                }
-//                int i = 0;
-//                while(i < 100)
-//                {
-//                    Log.d("Test", "test call onNext : " + i);
-//                    subscriber.onNext(i);
-//                    i++;
-//                }
-                subscriber.onCompleted();
-            }
-        }).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Integer>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d("Test", "onCompleted ..... ");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer i) {
-                        Log.d("Test", "test : " + i);
-                    }
-                });
     }
 
     @Override
@@ -231,6 +182,16 @@ public class MainActivity extends BaseActivity implements IMainView{
     public void presentDownloadBookView(Book book) {
         DownloadBookDialogFm downloadBookDialogFm = DownloadBookDialogFm.getInstance(book);
         downloadBookDialogFm.show(fragmentManager, book.getName());
+    }
+
+    @Override
+    public void openBook(Book book) {
+        Log.d("Test", "open book at : " + book.getLocalDownloadPath());
+        File file = new File(book.getLocalDownloadPath());
+        Intent openBookIntent = new Intent();
+        openBookIntent.setAction(Intent.ACTION_VIEW);
+        openBookIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
+        startActivity(openBookIntent);
     }
 
     /* end IMainView */

@@ -1,6 +1,11 @@
 package s3.lamphan.nghiencuulichsu.mvp.views.fragments;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -46,6 +51,7 @@ public class BookFragment extends BaseFragment implements IHandleDownloadView {
     private LinearLayoutManager linearLayoutManager;
     private IMainView container;
     private DownloadBookPresenter downloadBookPresenter;
+    private BroadcastReceiver downloadBookBR;
 
     @Bind(R.id.rvBook)
     RecyclerView rvBook;
@@ -97,7 +103,11 @@ public class BookFragment extends BaseFragment implements IHandleDownloadView {
             public void onBookItemClick(Book book) {
                 if(container != null)
                 {
-                    presentDownloadBookView(book);
+                    if(!book.isDownloaded()) {
+                        presentDownloadBookView(book);
+                    } else {
+                        openBook(book);
+                    }
                 }
             }
         });
@@ -204,6 +214,52 @@ public class BookFragment extends BaseFragment implements IHandleDownloadView {
         downloadBookDialogFm.show(fm, book.getName());
     }
 
+    public void openBook(Book book)
+    {
+        if(container != null)
+        {
+            container.openBook(book);
+        }
+    }
+
+    public Book getBookByDownloadReference(long reference)
+    {
+        if(bookList != null)
+        {
+            for(Book book : bookList)
+            {
+                if(book.getDownloadReference() == reference)
+                {
+                    return book;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void registerDownloadBroadcastReceiver()
+    {
+        if(downloadBookBR == null)
+        {
+            downloadBookBR = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    Log.d("Test", "receiver download complete action...");
+                    long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                    Book book = getBookByDownloadReference(reference);
+                    downloadBookPresenter.queryDownloadStatus(reference, book);
+                }
+            };
+            getContext().registerReceiver(downloadBookBR, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getContext().unregisterReceiver(downloadBookBR);
+    }
+
     /* IHandleDownloadView */
 
     @Override
@@ -233,6 +289,8 @@ public class BookFragment extends BaseFragment implements IHandleDownloadView {
     public void onStart(Book book, long downloadId) {
         Log.d("Test", "onstart download book : " + new Gson().toJson(book));
         bookAdapter.notifyDataSetChanged();
+        // register download broadcast receiver
+        registerDownloadBroadcastReceiver();
     }
 
     @Override
